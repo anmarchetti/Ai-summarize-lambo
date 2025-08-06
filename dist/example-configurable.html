@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer - Configurazione Flessibile</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.1);
+            min-height: 70vh;
+        }
+        .demo-text {
+            padding: 40px;
+            background: #f8f9fa;
+            margin: 40px;
+            border-radius: 12px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .demo-text h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .component-area {
+            padding: 0 40px 40px;
+        }
+        .config-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007cba;
+            padding: 15px;
+            margin: 20px 40px;
+            border-radius: 4px;
+        }
+        .config-info h4 {
+            margin-top: 0;
+            color: #007cba;
+        }
+        .config-info code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .demo-text, .component-area, .config-info {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>🎛️ Text Summarizer Configurabile</h1>
+        <p>Componente puro con configurazione gestita direttamente nell'HTML. Perfetto per integrazioni personalizzate!</p>
+    </div>
+
+    <div class="container">
+
+        <div class="demo-text">
+            <h3>📄 Testo di esempio per il riassunto:</h3>
+            <div class="source-content">
+                <p>L'intelligenza artificiale (IA) rappresenta una delle tecnologie più rivoluzionarie del nostro tempo, trasformando radicalmente il modo in cui viviamo, lavoriamo e interagiamo con il mondo digitale. Questa tecnologia, che simula i processi cognitivi umani attraverso algoritmi complessi e reti neurali artificiali, ha trovato applicazioni in settori diversissimi: dalla medicina alla finanza, dall'automotive all'intrattenimento, dalla logistica alla ricerca scientifica.</p>
+                
+                <p>Nel settore sanitario, l'IA sta rivoluzionando la diagnostica medica, permettendo di identificare malattie con una precisione spesso superiore a quella dei medici umani. Sistemi di machine learning analizzano radiografie, TAC e risonanze magnetiche, individuando anomalie che potrebbero sfuggire all'occhio umano. Inoltre, l'IA accelera la ricerca farmaceutica, riducendo i tempi necessari per sviluppare nuovi farmaci da decenni a pochi anni.</p>
+                
+                <p>L'industria automobilistica ha abbracciato l'IA per sviluppare veicoli autonomi che promettono di ridurre drasticamente gli incidenti stradali, ottimizzare i consumi energetici e rivoluzionare la mobilità urbana. Questi sistemi utilizzano sensori avanzati, telecamere e algoritmi di deep learning per navigare in tempo reale, prendendo decisioni complesse in frazioni di secondo.</p>
+            </div>
+        </div>
+
+        <div class="component-area">
+            <div id="text-summarizer-container"></div>
+        </div>
+    </div>
+
+    <!-- React Dependencies (Development versions for better error messages) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Il componente pure (con JSX/Babel corretto) -->
+    <script src="./text-summarizer-pure.js"></script>
+    
+    <!-- Configurazione personalizzata -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Inizializzazione Text Summarizer...');
+            
+            // CONFIGURAZIONE PERSONALIZZABILE
+            const config = {
+                // Selettori per l'estrazione del testo
+                textSelectors: ['.source-content p', '.article-body p', 'article p', '.content p'],
+                
+                // Container dove renderizzare il componente
+                containerId: 'text-summarizer-container',
+                
+                // Opzioni del componente
+                options: {
+                    // Testo predefinito (opzionale)
+                    sourceText: null,
+                    
+                    // Callback personalizzati (opzionali)
+                    onSummaryGenerated: function(summary, length, audience) {
+                        console.log('📝 Riassunto generato:', { summary, length, audience });
+                        // Qui puoi aggiungere tracking, analytics, ecc.
+                    },
+                    
+                    onCopySuccess: function(summary) {
+                        console.log('📋 Testo copiato con successo');
+                        // Personalizza la notifica di copia
+                    },
+                    
+                    onDownload: function(summary) {
+                        console.log('💾 Download avviato');
+                        // Personalizza il comportamento di download
+                    }
+                }
+            };
+            
+            // ESTRAZIONE AUTOMATICA DEL TESTO
+            function extractTextFromPage() {
+                const texts = [];
+                
+                config.textSelectors.forEach(selector => {
+                    const elements = document.querySelectorAll(selector);
+                    elements.forEach(element => {
+                        const text = element.textContent.trim();
+                        if (text.length > 50) {
+                            texts.push(text);
+                        }
+                    });
+                });
+                
+                return texts.join('\n\n');
+            }
+            
+            // INIZIALIZZAZIONE DEL COMPONENTE
+            function initTextSummarizer() {
+                const container = document.getElementById(config.containerId);
+                
+                if (!container) {
+                    console.error('❌ Container non trovato:', config.containerId);
+                    return;
+                }
+                
+                // Estrai il testo se non fornito
+                const sourceText = config.options.sourceText || extractTextFromPage();
+                
+                if (!sourceText) {
+                    console.warn('⚠️ Nessun testo trovato per il riassunto');
+                    return;
+                }
+                
+                console.log('✅ Testo estratto:', sourceText.substring(0, 100) + '...');
+                
+                // Crea e renderizza il componente
+                const root = ReactDOM.createRoot(container);
+                const element = React.createElement(TextSummarizer, {
+                    sourceText: sourceText
+                });
+                
+                root.render(element);
+                console.log('✅ Text Summarizer inizializzato con successo!');
+
+            }
+            
+            // VERIFICA DIPENDENZE E INIZIALIZZA
+            if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
+                console.error('❌ React o ReactDOM non disponibili');
+                return;
+            }
+            
+            console.log('🔍 Debug - TextSummarizer disponibile:', typeof TextSummarizer);
+            console.log('🔍 Debug - TextSummarizer:', TextSummarizer);
+            
+            if (typeof TextSummarizer === 'undefined') {
+                console.error('❌ TextSummarizer non disponibile');
+                return;
+            }
+            
+            // Inizializza il componente
+            initTextSummarizer();
+        });
+    </script>
+</body>
+</html>
