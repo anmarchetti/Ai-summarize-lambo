@@ -1,12 +1,13 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/TextSummarizer.jsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'text-summarizer.js',
     library: 'TextSummarizer',
     libraryTarget: 'umd',
+    libraryExport: 'default',
     globalObject: 'this'
   },
   module: {
@@ -17,25 +18,11 @@ module.exports = {
         use: {
           loader: 'babel-loader'
         }
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
       }
     ]
   },
-  plugins: [],
   resolve: {
     extensions: ['.js', '.jsx']
-  },
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'public'),
-    },
-    compress: true,
-    port: 3000,
-    open: true,
-    hot: true
   },
   externals: {
     react: {

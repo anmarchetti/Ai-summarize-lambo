@@ -63,15 +63,26 @@ const TextSummarizer = ({ sourceText = "" }) => {
   };
 
   return (
-    <div style={{
-      maxWidth: '800px',
-      margin: '0 auto',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
-      background: '#ffffff',
-      borderRadius: '12px',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-      overflow: 'hidden'
-    }}>
+    <div>
+      {/* CSS per l'animazione */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `
+      }} />
+      
+      <div style={{
+        maxWidth: '800px',
+        margin: '0 auto',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+        background: '#ffffff',
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+        overflow: 'hidden'
+      }}>
       {/* Controls Section */}
       <div style={{
         padding: '24px',
@@ -244,8 +255,8 @@ const TextSummarizer = ({ sourceText = "" }) => {
                 border: '4px solid #e1e5e9',
                 borderTop: '4px solid #667eea',
                 borderRadius: '50%',
-                animation: 'spin 1s linear infinite',
-                marginBottom: '16px'
+                marginBottom: '16px',
+                animation: 'spin 1s linear infinite'
               }} />
               <p>Generazione del riassunto in corso...</p>
             </div>
@@ -332,14 +343,7 @@ const TextSummarizer = ({ sourceText = "" }) => {
           </div>
         )}
       </div>
-
-      {/* CSS Animation */}
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
+      </div>
     </div>
   );
 };

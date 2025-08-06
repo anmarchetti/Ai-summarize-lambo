@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/TextSummarizerPure.jsx',
+  entry: './src/TextSummarizer.jsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'text-summarizer-pure.js',
