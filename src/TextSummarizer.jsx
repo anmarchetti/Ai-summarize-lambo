@@ -78,13 +78,7 @@ const TextSummarizer = ({ sourceText = "" }) => {
       'social': 'Usa un tono coinvolgente e dinamico, adatto per i social media. Puoi usare emoji e un linguaggio più diretto e accattivante.'
     };
 
-    return `Riassumi il seguente testo in ${lengthInstructions[length]}. ${audienceInstructions[audience]}
-
-Testo da riassumere:
-${text}
-
-Riassunto:`;
-  };
+    return `Riassumi il seguente testo in ${lengthInstructions[length]}. ${audienceInstructions[audience]} Testo da riassumere: ${text} Riassunto:`;};
 
   // Funzione per chiamare OpenAI
   const callOpenAI = async (text, length, audience, config) => {
@@ -114,8 +108,6 @@ Riassunto:`;
     const data = await response.json();
     return data.choices[0].message.content.trim();
   };
-
-
 
   // Funzione principale per generare il riassunto
   const generateSummary = async () => {
@@ -275,21 +267,21 @@ Riassunto:`;
               isActionButton={true}
               lightBackground={true}
             >
-              📋 Copia
+              Copia
             </OptionButton>
             <OptionButton
               onClick={downloadPDF}
               isActionButton={true}
               lightBackground={true}
             >
-              📄 Download TXT
+              Download TXT
             </OptionButton>
             <OptionButton
               onClick={generateSummary}
               isActionButton={true}
               lightBackground={true}
             >
-              🔄 Rigenera
+              Rigenera
             </OptionButton>
           </div>
         )}
