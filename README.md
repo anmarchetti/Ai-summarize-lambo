@@ -16,7 +16,7 @@ Un componente React standalone per la generazione di riassunti di testo personal
 text-summarizer-component/
 ├── src/
 │   ├── TextSummarizer.jsx      # Componente principale
-│   ├── TextSummarizer.css      # Stili del componente
+│   ├── TextSummarizerPure.jsx  # Componente configurabile
 │   └── index.js                # Punto di ingresso e logica di integrazione
 ├── dist/                       # File compilati (generati con npm run build)
 │   ├── text-summarizer.js          # Script per integrazione (richiede React esterno)
