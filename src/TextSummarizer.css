@@ -1,0 +1,233 @@
+/* Text Summarizer Component Styles */
+
+/* Animazioni */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Container principale */
+.text-summarizer {
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Sezione controls */
+.text-summarizer__controls {
+  padding: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.text-summarizer__control-group {
+  margin-bottom: 24px;
+}
+
+.text-summarizer__control-group:last-child {
+  margin-bottom: 0;
+}
+
+.text-summarizer__label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.text-summarizer__options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Bottoni opzione */
+.option-button {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Bottoni opzione - sfondo scuro */
+.option-button--dark {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.option-button--dark.option-button--selected {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.option-button--dark:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Bottoni opzione - sfondo chiaro */
+.option-button--light {
+  background: rgba(0, 0, 0, 0.03);
+  color: #333;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.option-button--light.option-button--selected {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.option-button--light:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.option-button__label {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.option-button__description {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* Sezione summary */
+.text-summarizer__summary {
+  padding: 24px;
+}
+
+.text-summarizer__summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.text-summarizer__title {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.text-summarizer__generate-button {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  min-width: 140px;
+  text-align: center;
+  transition: all 0.2s ease;
+  padding: 12px 24px;
+  color: #333;
+}
+
+.text-summarizer__generate-button:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.text-summarizer__generate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Area del riassunto */
+.text-summarizer__content {
+  min-height: 200px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: #fafbfc;
+}
+
+.text-summarizer__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  color: #666;
+}
+
+.text-summarizer__spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e1e5e9;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  margin-bottom: 16px;
+  animation: spin 1s linear infinite;
+}
+
+.text-summarizer__loading-text {
+  margin: 0;
+}
+
+.text-summarizer__result {
+  line-height: 1.6;
+  color: #333;
+  font-size: 15px;
+  white-space: pre-wrap;
+}
+
+.text-summarizer__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  color: #999;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Bottoni di azione */
+.text-summarizer__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .text-summarizer {
+    margin: 10px;
+    border-radius: 8px;
+  }
+  
+  .text-summarizer__controls {
+    padding: 20px;
+  }
+  
+  .text-summarizer__summary {
+    padding: 20px;
+  }
+  
+  .text-summarizer__summary-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .text-summarizer__generate-button {
+    min-width: auto;
+  }
+  
+  .option-button {
+    min-width: 100px;
+  }
+}

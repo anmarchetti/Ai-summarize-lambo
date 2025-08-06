@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import './TextSummarizer.css';
 
 // Componente Button minimale e uniforme
 const OptionButton = ({ 
@@ -7,79 +8,24 @@ const OptionButton = ({
   onClick, 
   children,
   isActionButton = false,
-  lightBackground = false // nuovo parametro per sfondo chiaro
+  lightBackground = false
 }) => {
-  // Stili per sfondo chiaro (sezione summary)
-  const lightStyles = {
-    background: isSelected ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.03)',
-    border: '1px solid rgba(0,0,0,0.1)',
-    color: '#333',
-    hoverBackground: 'rgba(0,0,0,0.08)',
-    hoverBorderColor: 'rgba(0,0,0,0.15)'
-  };
-
-  // Stili per sfondo scuro (sezione controls)
-  const darkStyles = {
-    background: isSelected ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    color: 'white',
-    hoverBackground: 'rgba(255,255,255,0.15)',
-    hoverBorderColor: 'rgba(255,255,255,0.2)'
-  };
-
-  const styles = lightBackground ? lightStyles : darkStyles;
+  const className = `option-button ${lightBackground ? 'option-button--light' : 'option-button--dark'} ${isSelected ? 'option-button--selected' : ''}`;
 
   return (
-    <div
-      style={{
-        flex: '1',
-        minWidth: '120px',
-        padding: '12px 16px',
-        background: styles.background,
-        border: styles.border,
-        borderRadius: '6px',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
-        textAlign: 'center',
-        color: styles.color
-      }}
-      onClick={onClick}
-      onMouseEnter={(e) => {
-        e.target.style.background = styles.hoverBackground;
-        e.target.style.borderColor = styles.hoverBorderColor;
-      }}
-      onMouseLeave={(e) => {
-        if (!isSelected) {
-          e.target.style.background = lightBackground ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.05)';
-          e.target.style.borderColor = lightBackground ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
-        } else {
-          e.target.style.background = lightBackground ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)';
-          e.target.style.borderColor = lightBackground ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
-        }
-      }}
-    >
+    <div className={className} onClick={onClick}>
       {isActionButton ? (
         // Per bottoni di azione, mostra solo il contenuto
-        <div style={{
-          fontWeight: '500',
-          fontSize: '14px'
-        }}>
+        <div className="option-button__label">
           {children}
         </div>
       ) : (
         // Per bottoni di opzione, mostra label e description
         <>
-          <div style={{
-            fontWeight: '500',
-            fontSize: '14px',
-            marginBottom: '2px'
-          }}>
+          <div className="option-button__label">
             {option.label}
           </div>
-          <div style={{
-            fontSize: '11px',
-            opacity: '0.7'
-          }}>
+          <div className="option-button__description">
             {option.description}
           </div>
         </>
@@ -253,46 +199,14 @@ Riassunto:`;
   };
 
   return (
-    <div>
-      {/* CSS per l'animazione */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `
-      }} />
-      
-      <div style={{
-        maxWidth: '800px',
-        margin: '0 auto',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
-        background: '#ffffff',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-        overflow: 'hidden'
-      }}>
+    <div className="text-summarizer">
       {/* Controls Section */}
-      <div style={{
-        padding: '24px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white'
-      }}>
-        <div style={{ marginBottom: '24px' }}>
-          <label style={{
-            display: 'block',
-            fontWeight: '600',
-            marginBottom: '12px',
-            fontSize: '16px'
-          }}>
+      <div className="text-summarizer__controls">
+        <div className="text-summarizer__control-group">
+          <label className="text-summarizer__label">
             Lunghezza del riassunto:
           </label>
-          <div style={{
-            display: 'flex',
-            gap: '8px',
-            flexWrap: 'wrap'
-          }}>
+          <div className="text-summarizer__options">
             {lengthOptions.map(option => (
               <OptionButton
                 key={option.value}
@@ -304,20 +218,11 @@ Riassunto:`;
           </div>
         </div>
 
-        <div>
-          <label style={{
-            display: 'block',
-            fontWeight: '600',
-            marginBottom: '12px',
-            fontSize: '16px'
-          }}>
+        <div className="text-summarizer__control-group">
+          <label className="text-summarizer__label">
             Tipo di audience:
           </label>
-          <div style={{
-            display: 'flex',
-            gap: '8px',
-            flexWrap: 'wrap'
-          }}>
+          <div className="text-summarizer__options">
             {audienceOptions.map(option => (
               <OptionButton
                 key={option.value}
@@ -331,103 +236,32 @@ Riassunto:`;
       </div>
 
       {/* Summary Section */}
-      <div style={{ padding: '24px' }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '20px',
-          flexWrap: 'wrap',
-          gap: '12px'
-        }}>
-          <h3 style={{
-            margin: '0',
-            color: '#333',
-            fontSize: '20px',
-            fontWeight: '600'
-          }}>
+      <div className="text-summarizer__summary">
+        <div className="text-summarizer__summary-header">
+          <h3 className="text-summarizer__title">
             Riassunto generato
           </h3>
-          <div
-            style={{
-              background: 'rgba(0,0,0,0.05)',
-              border: '1px solid rgba(0,0,0,0.1)',
-              borderRadius: '6px',
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              fontWeight: '500',
-              fontSize: '14px',
-              minWidth: '140px',
-              opacity: isLoading ? 0.6 : 1,
-              textAlign: 'center',
-              transition: 'all 0.2s ease',
-              padding: '12px 24px',
-              color: '#333'
-            }}
+          <button
+            className="text-summarizer__generate-button"
             onClick={generateSummary}
-            onMouseEnter={(e) => {
-              if (!isLoading) {
-                e.target.style.background = 'rgba(0,0,0,0.08)';
-                e.target.style.borderColor = 'rgba(0,0,0,0.15)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isLoading) {
-                e.target.style.background = 'rgba(0,0,0,0.05)';
-                e.target.style.borderColor = 'rgba(0,0,0,0.1)';
-              }
-            }}
+            disabled={isLoading}
           >
             {isLoading ? 'Generando...' : 'Genera Riassunto'}
-          </div>
+          </button>
         </div>
 
-        <div style={{
-          minHeight: '200px',
-          border: '2px solid #e1e5e9',
-          borderRadius: '8px',
-          padding: '20px',
-          marginBottom: '20px',
-          background: '#fafbfc'
-        }}>
+        <div className="text-summarizer__content">
           {isLoading ? (
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '160px',
-              color: '#666'
-            }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                border: '4px solid #e1e5e9',
-                borderTop: '4px solid #667eea',
-                borderRadius: '50%',
-                marginBottom: '16px',
-                animation: 'spin 1s linear infinite'
-              }} />
-              <p>Generazione del riassunto in corso...</p>
+            <div className="text-summarizer__loading">
+              <div className="text-summarizer__spinner" />
+              <p className="text-summarizer__loading-text">Generazione del riassunto in corso...</p>
             </div>
           ) : summary ? (
-            <div style={{
-              lineHeight: '1.6',
-              color: '#333',
-              fontSize: '15px',
-              whiteSpace: 'pre-wrap'
-            }}>
+            <div className="text-summarizer__result">
               {summary}
             </div>
           ) : (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '160px',
-              color: '#999',
-              fontStyle: 'italic',
-              textAlign: 'center'
-            }}>
+            <div className="text-summarizer__placeholder">
               Clicca su "Genera Riassunto" per iniziare
             </div>
           )}
@@ -435,12 +269,7 @@ Riassunto:`;
 
         {/* Action Buttons */}
         {summary && !isLoading && (
-          <div style={{
-            display: 'flex',
-            gap: '12px',
-            flexWrap: 'wrap',
-            justifyContent: 'center'
-          }}>
+          <div className="text-summarizer__actions">
             <OptionButton
               onClick={copySummary}
               isActionButton={true}
@@ -464,7 +293,6 @@ Riassunto:`;
             </OptionButton>
           </div>
         )}
-      </div>
       </div>
     </div>
   );
