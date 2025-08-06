@@ -1,5 +1,93 @@
 import { useState, useRef } from 'react';
 
+// Componente Button riutilizzabile per le opzioni e azioni
+const OptionButton = ({ 
+  option, 
+  isSelected = false, 
+  onClick, 
+  children,
+  // Props per bottoni di azione
+  isActionButton = false,
+  backgroundColor = null,
+  color = null
+}) => {
+  // Se è un bottone di azione, usa stili diversi
+  const actionStyles = isActionButton ? {
+    background: backgroundColor || 'rgba(255,255,255,0.1)',
+    border: '2px solid rgba(255,255,255,0.2)',
+    color: color || 'white'
+  } : {
+    background: isSelected ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
+    border: isSelected ? '2px solid #ffffff' : '2px solid rgba(255,255,255,0.2)',
+    color: 'white'
+  };
+
+  return (
+    <div
+      style={{
+        flex: '1',
+        minWidth: '120px',
+        padding: '16px',
+        ...actionStyles,
+        borderRadius: '8px',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        textAlign: 'center',
+        ...(isSelected && !isActionButton ? {
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+          transform: 'translateY(-2px)'
+        } : {}),
+        // Effetto hover per i bottoni di azione
+        ':hover': isActionButton ? {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+        } : {}
+      }}
+      onClick={onClick}
+      onMouseEnter={(e) => {
+        if (isActionButton) {
+          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (isActionButton && !isSelected) {
+          e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = 'none';
+        }
+      }}
+    >
+      {isActionButton ? (
+        // Per bottoni di azione, mostra solo il contenuto
+        <div style={{
+          fontWeight: '600',
+          fontSize: '14px'
+        }}>
+          {children}
+        </div>
+      ) : (
+        // Per bottoni di opzione, mostra label e description
+        <>
+          <div style={{
+            fontWeight: '600',
+            fontSize: '14px',
+            marginBottom: '4px'
+          }}>
+            {option.label}
+          </div>
+          <div style={{
+            fontSize: '12px',
+            opacity: '0.9'
+          }}>
+            {option.description}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+
 const TextSummarizer = ({ sourceText = "" }) => {
   const [length, setLength] = useState('medio');
   const [audience, setAudience] = useState('giornalista');
@@ -104,39 +192,12 @@ const TextSummarizer = ({ sourceText = "" }) => {
             flexWrap: 'wrap'
           }}>
             {lengthOptions.map(option => (
-              <div
+              <OptionButton
                 key={option.value}
-                style={{
-                  flex: '1',
-                  minWidth: '120px',
-                  padding: '16px',
-                  background: length === option.value ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
-                  border: length === option.value ? '2px solid #ffffff' : '2px solid rgba(255,255,255,0.2)',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  textAlign: 'center',
-                  ...(length === option.value ? {
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-                    transform: 'translateY(-2px)'
-                  } : {})
-                }}
+                option={option}
+                isSelected={length === option.value}
                 onClick={() => setLength(option.value)}
-              >
-                <div style={{
-                  fontWeight: '600',
-                  fontSize: '14px',
-                  marginBottom: '4px'
-                }}>
-                  {option.label}
-                </div>
-                <div style={{
-                  fontSize: '12px',
-                  opacity: '0.9'
-                }}>
-                  {option.description}
-                </div>
-              </div>
+              />
             ))}
           </div>
         </div>
@@ -156,39 +217,12 @@ const TextSummarizer = ({ sourceText = "" }) => {
             flexWrap: 'wrap'
           }}>
             {audienceOptions.map(option => (
-              <div
+              <OptionButton
                 key={option.value}
-                style={{
-                  flex: '1',
-                  minWidth: '120px',
-                  padding: '16px',
-                  background: audience === option.value ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)',
-                  border: audience === option.value ? '2px solid #ffffff' : '2px solid rgba(255,255,255,0.2)',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  textAlign: 'center',
-                  ...(audience === option.value ? {
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-                    transform: 'translateY(-2px)'
-                  } : {})
-                }}
+                option={option}
+                isSelected={audience === option.value}
                 onClick={() => setAudience(option.value)}
-              >
-                <div style={{
-                  fontWeight: '600',
-                  fontSize: '14px',
-                  marginBottom: '4px'
-                }}>
-                  {option.label}
-                </div>
-                <div style={{
-                  fontSize: '12px',
-                  opacity: '0.9'
-                }}>
-                  {option.description}
-                </div>
-              </div>
+              />
             ))}
           </div>
         </div>
@@ -212,7 +246,7 @@ const TextSummarizer = ({ sourceText = "" }) => {
           }}>
             Riassunto generato
           </h3>
-          <button
+          <div
             style={{
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               color: 'white',
@@ -223,13 +257,14 @@ const TextSummarizer = ({ sourceText = "" }) => {
               fontWeight: '600',
               fontSize: '14px',
               minWidth: '140px',
-              opacity: isLoading ? 0.7 : 1
+              opacity: isLoading ? 0.7 : 1,
+              textAlign: 'center',
+              transition: 'all 0.3s ease'
             }}
             onClick={generateSummary}
-            disabled={isLoading}
           >
             {isLoading ? 'Generando...' : 'Genera Riassunto'}
-          </button>
+          </div>
         </div>
 
         <div style={{
@@ -292,54 +327,27 @@ const TextSummarizer = ({ sourceText = "" }) => {
             flexWrap: 'wrap',
             justifyContent: 'center'
           }}>
-            <button
-              style={{
-                background: '#28a745',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: '500',
-                fontSize: '14px',
-                minWidth: '120px'
-              }}
+            <OptionButton
               onClick={copySummary}
+              isActionButton={true}
+              backgroundColor="rgba(40, 167, 69, 0.8)"
             >
               📋 Copia
-            </button>
-            <button
-              style={{
-                background: '#dc3545',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: '500',
-                fontSize: '14px',
-                minWidth: '120px'
-              }}
+            </OptionButton>
+            <OptionButton
               onClick={downloadPDF}
+              isActionButton={true}
+              backgroundColor="rgba(220, 53, 69, 0.8)"
             >
               📄 Download TXT
-            </button>
-            <button
-              style={{
-                background: '#6c757d',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: '500',
-                fontSize: '14px',
-                minWidth: '120px'
-              }}
+            </OptionButton>
+            <OptionButton
               onClick={generateSummary}
+              isActionButton={true}
+              backgroundColor="rgba(108, 117, 125, 0.8)"
             >
               🔄 Rigenera
-            </button>
+            </OptionButton>
           </div>
         )}
       </div>
