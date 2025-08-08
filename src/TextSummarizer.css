@@ -157,6 +157,7 @@
   justify-content: center;
   height: 160px;
   color: #666;
+  border-radius: 50%;
 }
 
 .text-summarizer__spinner {
@@ -166,6 +167,7 @@
   border-top: 4px solid #667eea;
   margin-bottom: 16px;
   animation: spin 1s linear infinite;
+  border-radius: 50%;
 }
 
 .text-summarizer__loading-text {

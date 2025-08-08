@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import './TextSummarizer.css';
 
 // Componente Button minimale e uniforme
@@ -40,6 +40,7 @@ const TextSummarizer = ({ sourceText = "" }) => {
   const [audience, setAudience] = useState('giornalista');
   const [summary, setSummary] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [language, setLanguage] = useState('italiano');
 
   const lengthOptions = [
     { value: 'corta', label: 'Corta', description: '~50 parole' },
@@ -52,21 +53,33 @@ const TextSummarizer = ({ sourceText = "" }) => {
     { value: 'social', label: 'Social Media', description: 'Tono coinvolgente' }
   ];
 
-  // Configurazione OpenAI (opzionale)
-  const getOpenAIConfig = () => {
-    // Verifica se le variabili d'ambiente sono disponibili
-    if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_OPENAI_API_KEY) {
-      return {
-        endpoint: 'https://api.openai.com/v1/chat/completions',
-        apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-        model: 'gpt-3.5-turbo'
-      };
-    }
-    return null;
+  const languageOptions = [
+    { value: 'italiano', label: 'Italiano', description: 'IT' },
+    { value: 'inglese', label: 'English', description: 'EN' },
+    { value: 'tedesco', label: 'Deutsch', description: 'DE' }
+  ];
+
+  // Configurazione Gemini (preferita)
+  const DEFAULT_GEMINI_API_KEY = 'AIzaSyAITNHBXltkxfT8GQBRqdZs8_hFxdah4e0';
+
+  const getGeminiConfig = () => {
+    const apiKey = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_GEMINI_API_KEY)
+      || (typeof window !== 'undefined' && window.GEMINI_API_KEY)
+      || DEFAULT_GEMINI_API_KEY;
+
+    if (!apiKey) return null;
+
+    return {
+      endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+      apiKey,
+      model: 'gemini-1.5-flash'
+    };
   };
 
+  
+
   // Funzione per costruire il prompt basato sui parametri
-  const buildPrompt = (text, length, audience) => {
+  const buildPrompt = (text, length, audience, language) => {
     const lengthInstructions = {
       'corta': 'circa 50 parole',
       'medio': 'circa 150 parole', 
@@ -78,36 +91,50 @@ const TextSummarizer = ({ sourceText = "" }) => {
       'social': 'Usa un tono coinvolgente e dinamico, adatto per i social media. Puoi usare emoji e un linguaggio più diretto e accattivante.'
     };
 
-    return `Riassumi il seguente testo in ${lengthInstructions[length]}. ${audienceInstructions[audience]} Testo da riassumere: ${text} Riassunto:`;};
+    const languageInstructions = {
+      'italiano': 'Scrivi il riassunto in italiano.',
+      'inglese': 'Write the summary in English.',
+      'tedesco': 'Schreibe die Zusammenfassung auf Deutsch.'
+    };
 
-  // Funzione per chiamare OpenAI
-  const callOpenAI = async (text, length, audience, config) => {
-    const response = await fetch(config.endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${config.apiKey}`
-      },
-      body: JSON.stringify({
-        model: config.model,
-        messages: [
-          {
-            role: 'user',
-            content: buildPrompt(text, length, audience)
-          }
-        ],
-        max_tokens: length === 'lungo' ? 400 : length === 'medio' ? 200 : 80,
+    return `Riassumi il seguente testo in ${lengthInstructions[length]}. ${audienceInstructions[audience]} ${languageInstructions[language]} Testo da riassumere: ${text} Riassunto:`;};
+
+  // Funzione per chiamare Gemini
+  const callGemini = async (text, length, audience, config) => {
+    const url = `${config.endpoint}?key=${encodeURIComponent(config.apiKey)}`;
+    const body = {
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: buildPrompt(text, length, audience, language) }]
+        }
+      ],
+      generationConfig: {
+        maxOutputTokens: length === 'lungo' ? 400 : length === 'medio' ? 200 : 80,
         temperature: audience === 'social' ? 0.8 : 0.3
-      })
+      }
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      throw new Error(`Gemini API error: ${response.status}`);
     }
 
     const data = await response.json();
-    return data.choices[0].message.content.trim();
+    const textParts = data?.candidates?.[0]?.content?.parts || [];
+    const combined = textParts.map(p => p.text || '').join('').trim();
+    if (!combined) {
+      throw new Error('Gemini API: nessun testo generato');
+    }
+    return combined;
   };
+
+  
 
   // Funzione principale per generare il riassunto
   const generateSummary = async () => {
@@ -120,13 +147,9 @@ const TextSummarizer = ({ sourceText = "" }) => {
     
     try {
       let summary = '';
-      
-      // Verifica se OpenAI è disponibile e configurato
-      const openAIConfig = getOpenAIConfig();
-      
-      if (openAIConfig) {
-        // Usa OpenAI se configurato
-        summary = await callOpenAI(sourceText, length, audience, openAIConfig);
+      const geminiConfig = getGeminiConfig();
+      if (geminiConfig) {
+        summary = await callGemini(sourceText, length, audience, geminiConfig);
       } else {
         // Modalità demo (predefinita) - simula il caricamento
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -221,6 +244,22 @@ const TextSummarizer = ({ sourceText = "" }) => {
                 option={option}
                 isSelected={audience === option.value}
                 onClick={() => setAudience(option.value)}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="text-summarizer__control-group">
+          <label className="text-summarizer__label">
+            Lingua del riassunto:
+          </label>
+          <div className="text-summarizer__options">
+            {languageOptions.map(option => (
+              <OptionButton
+                key={option.value}
+                option={option}
+                isSelected={language === option.value}
+                onClick={() => setLanguage(option.value)}
               />
             ))}
           </div>

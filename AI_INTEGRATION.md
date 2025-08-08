@@ -1,47 +1,45 @@
-# Integrazione OpenAI per Text Summarizer
+# Integrazione Gemini per Text Summarizer
 
-Questo componente utilizza OpenAI GPT per la generazione automatica di riassunti intelligenti e contestualizzati.
+Questo componente utilizza Google Gemini per la generazione automatica di riassunti intelligenti e contestualizzati.
 
 ## Servizio Supportato
 
-### OpenAI GPT
-- **Modello**: GPT-3.5-turbo (configurabile)
-- **Costo**: ~$0.002 per 1K token
-- **Qualità**: Eccellente per riassunti
-- **Velocità**: Veloce (2-5 secondi)
+### Google Gemini
+- Modelli: `gemini-1.5-flash` (predefinito)
+- Endpoint REST: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`
+- Parametri usati: `maxOutputTokens` e `temperature` in base a lunghezza/audience
 
 ## Configurazione
 
-### Configurazione API Key
+### Impostare la API Key
 
-Crea un file `.env` nella root del progetto:
+Opzioni supportate per fornire la chiave:
 
+1. Variabile d'ambiente build-time (sviluppo/build):
 ```env
-# OpenAI API Key (obbligatoria per usare l'AI)
-REACT_APP_OPENAI_API_KEY=sk-your-openai-key-here
+REACT_APP_GEMINI_API_KEY=la-tua-chiave
 ```
 
-**Come ottenere l'API Key:**
-1. Vai su [platform.openai.com](https://platform.openai.com)
-2. Crea un account o effettua il login
-3. Vai su "API Keys" nel menu
-4. Clicca "Create new secret key"
-5. Copia la chiave nel file `.env`
+2. Variabile globale runtime (prima di caricare lo script):
+```html
+<script>window.GEMINI_API_KEY = 'la-tua-chiave';</script>
+```
+
+3. Valore di default nel codice (solo per test locali).
 
 ### Modalità Demo
 
-Se non configuri nessun servizio, il componente funziona in modalità demo con riassunti predefiniti.
+Se non imposti nessuna chiave, il componente funziona in modalità demo con riassunti predefiniti.
 
 ## Come Funziona
 
-Il componente automaticamente:
+Il componente:
 
-1. **Costruisce prompt ottimizzati** basati sui parametri selezionati
-2. **Regola max_tokens** in base alla lunghezza richiesta
-3. **Imposta temperature** diversa per il tipo di audience
-4. **Gestisce errori** e fallback alla modalità demo
+1. Costruisce prompt ottimizzati in base a lunghezza e audience
+2. Regola `maxOutputTokens` e `temperature`
+3. Gestisce errori e fallback alla modalità demo
 
-### Esempio di Prompt Generato
+### Esempio di Prompt
 
 ```
 Riassumi il seguente testo in circa 150 parole. Usa un tono professionale e formale, adatto per un articolo giornalistico. Mantieni obiettività e precisione.
@@ -52,53 +50,26 @@ Testo da riassumere:
 Riassunto:
 ```
 
-## Parametri Ottimizzati
-
-### Lunghezza
-- **Corta**: ~50 parole (max_tokens: 80)
-- **Media**: ~150 parole (max_tokens: 200)  
-- **Lunga**: ~300 parole (max_tokens: 400)
-
-### Audience
-- **Giornalista**: Temperature 0.3 (più deterministico)
-- **Social**: Temperature 0.8 (più creativo)
-
-## Gestione Errori
-
-Il componente gestisce automaticamente:
-- Errori di rete
-- Rate limiting
-- API key non valide
-- Timeout delle richieste
-
 ## Sicurezza
 
-⚠️ **IMPORTANTE**: Le API key non devono mai essere esposte nel codice frontend in produzione.
+⚠️ Le API key non dovrebbero essere esposte nel frontend in produzione.
 
-### Soluzioni Consigliate:
-
-1. **Backend Proxy**: Crea un endpoint nel tuo backend che chiama l'AI
-2. **Serverless Functions**: Usa Vercel Functions o Netlify Functions
-3. **Environment Variables**: Solo per sviluppo locale
-
-## Costi Stimati
-
-Per 1000 riassunti al mese con GPT-3.5-turbo:
-- **Testo breve** (~500 parole): ~$1-2
-- **Testo medio** (~1000 parole): ~$3-5  
-- **Testo lungo** (~2000 parole): ~$6-10
+Soluzioni consigliate:
+- Backend proxy
+- Serverless functions (Vercel/Netlify)
+- Variabili d'ambiente solo in sviluppo
 
 ## Testing
 
 ```bash
-# Modalità demo (gratuita) - senza API key
+# Modalità demo (gratuita)
 npm start
 
-# Con OpenAI - con API key configurata
-REACT_APP_OPENAI_API_KEY=sk-your-key npm start
+# Con Gemini
+REACT_APP_GEMINI_API_KEY=la-tua-chiave npm start
 ```
 
 ## Modalità di Funzionamento
 
-- **Senza API Key**: Modalità demo con riassunti predefiniti
-- **Con API Key**: Riassunti generati da OpenAI GPT in tempo reale
+- Senza API Key: modalità demo
+- Con API Key: riassunti generati da Gemini in tempo reale
