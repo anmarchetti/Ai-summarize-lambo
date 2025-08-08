@@ -1,0 +1,45 @@
+{
+  "header": { "title": "Generated Summary" },
+  "controls": {
+    "length": {
+      "label": "Summary length:",
+      "options": {
+        "corta": { "label": "Short", "description": "~50 words" },
+        "medio": { "label": "Medium", "description": "~150 words" },
+        "lungo": { "label": "Long", "description": "~300 words" }
+      }
+    },
+    "audience": {
+      "label": "Audience type:",
+      "options": {
+        "giornalista": { "label": "Journalist", "description": "Professional tone" },
+        "social": { "label": "Social Media", "description": "Engaging tone" }
+      }
+    },
+    "language": {
+      "label": "Summary language:",
+      "options": {
+        "italiano": { "label": "Italian", "description": "IT" },
+        "inglese": { "label": "English", "description": "EN" },
+        "tedesco": { "label": "German", "description": "DE" }
+      }
+    }
+  },
+  "buttons": {
+    "generate": "Generate Summary",
+    "generating": "Generating...",
+    "copy": "Copy",
+    "downloadTxt": "Download TXT",
+    "regenerate": "Regenerate"
+  },
+  "results": {
+    "loading": { "text": "Generating summary..." },
+    "placeholder": "Click \"Generate Summary\" to start"
+  },
+  "alerts": {
+    "noText": "No text available for summarization",
+    "copySuccess": "Text copied to clipboard!",
+    "copyError": "Error copying text"
+  }
+}
+

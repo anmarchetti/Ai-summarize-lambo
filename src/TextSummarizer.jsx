@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import itIT from './i18n/it_it.json';
 import './TextSummarizer.css';
 
 // Componente Button minimale e uniforme
@@ -35,7 +36,8 @@ const OptionButton = ({
 };
 
 
-const TextSummarizer = ({ sourceText = "" }) => {
+const TextSummarizer = ({ sourceText = "", translations }) => {
+  const t = translations || itIT;
   const [length, setLength] = useState('medio');
   const [audience, setAudience] = useState('giornalista');
   const [summary, setSummary] = useState('');
@@ -43,29 +45,45 @@ const TextSummarizer = ({ sourceText = "" }) => {
   const [language, setLanguage] = useState('italiano');
 
   const lengthOptions = [
-    { value: 'corta', label: 'Corta', description: '~50 parole' },
-    { value: 'medio', label: 'Media', description: '~150 parole' },
-    { value: 'lungo', label: 'Lunga', description: '~300 parole' }
+    { value: 'corta', label: t.controls.length.options.corta.label, description: t.controls.length.options.corta.description },
+    { value: 'medio', label: t.controls.length.options.medio.label, description: t.controls.length.options.medio.description },
+    { value: 'lungo', label: t.controls.length.options.lungo.label, description: t.controls.length.options.lungo.description }
   ];
 
   const audienceOptions = [
-    { value: 'giornalista', label: 'Giornalista', description: 'Tono professionale' },
-    { value: 'social', label: 'Social Media', description: 'Tono coinvolgente' }
+    { value: 'giornalista', label: t.controls.audience.options.giornalista.label, description: t.controls.audience.options.giornalista.description },
+    { value: 'social', label: t.controls.audience.options.social.label, description: t.controls.audience.options.social.description }
   ];
 
   const languageOptions = [
-    { value: 'italiano', label: 'Italiano', description: 'IT' },
-    { value: 'inglese', label: 'English', description: 'EN' },
-    { value: 'tedesco', label: 'Deutsch', description: 'DE' }
+    { value: 'italiano', label: t.controls.language.options.italiano.label, description: t.controls.language.options.italiano.description },
+    { value: 'inglese', label: t.controls.language.options.inglese.label, description: t.controls.language.options.inglese.description },
+    { value: 'tedesco', label: t.controls.language.options.tedesco.label, description: t.controls.language.options.tedesco.description }
   ];
 
   // Configurazione Gemini (preferita)
-  const DEFAULT_GEMINI_API_KEY = 'AIzaSyAITNHBXltkxfT8GQBRqdZs8_hFxdah4e0';
-
   const getGeminiConfig = () => {
-    const apiKey = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_GEMINI_API_KEY)
-      || (typeof window !== 'undefined' && window.GEMINI_API_KEY)
-      || DEFAULT_GEMINI_API_KEY;
+    let apiKey = null;
+    // 1) Variabile d'ambiente build-time
+    if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_GEMINI_API_KEY) {
+      apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+    }
+    // 2) Variabile globale runtime in chiaro
+    if (!apiKey && typeof window !== 'undefined' && window.GEMINI_API_KEY) {
+      apiKey = window.GEMINI_API_KEY;
+    }
+    // 3) Variabile globale runtime Base64 (offuscata, reversibile)
+    if (!apiKey && typeof window !== 'undefined' && window.GEMINI_API_KEY_B64) {
+      try {
+        if (typeof atob === 'function') {
+          apiKey = atob(window.GEMINI_API_KEY_B64);
+        } else if (typeof Buffer !== 'undefined') {
+          apiKey = Buffer.from(window.GEMINI_API_KEY_B64, 'base64').toString('utf-8');
+        }
+      } catch (_) {
+        // ignora errori di decoding
+      }
+    }
 
     if (!apiKey) return null;
 
@@ -139,7 +157,7 @@ const TextSummarizer = ({ sourceText = "" }) => {
   // Funzione principale per generare il riassunto
   const generateSummary = async () => {
     if (!sourceText.trim()) {
-      alert('Nessun testo disponibile per il riassunto');
+      alert(t.alerts.noText);
       return;
     }
 
@@ -195,10 +213,10 @@ const TextSummarizer = ({ sourceText = "" }) => {
     
     try {
       await navigator.clipboard.writeText(summary);
-      alert('Testo copiato negli appunti!');
+      alert(t.alerts.copySuccess);
     } catch (err) {
       console.error('Errore nella copia:', err);
-      alert('Errore durante la copia del testo');
+      alert(t.alerts.copyError);
     }
   };
 
@@ -219,7 +237,7 @@ const TextSummarizer = ({ sourceText = "" }) => {
       <div className="text-summarizer__controls">
         <div className="text-summarizer__control-group">
           <label className="text-summarizer__label">
-            Lunghezza del riassunto:
+            {t.controls.length.label}
           </label>
           <div className="text-summarizer__options">
             {lengthOptions.map(option => (
@@ -235,7 +253,7 @@ const TextSummarizer = ({ sourceText = "" }) => {
 
         <div className="text-summarizer__control-group">
           <label className="text-summarizer__label">
-            Tipo di audience:
+            {t.controls.audience.label}
           </label>
           <div className="text-summarizer__options">
             {audienceOptions.map(option => (
@@ -251,7 +269,7 @@ const TextSummarizer = ({ sourceText = "" }) => {
 
         <div className="text-summarizer__control-group">
           <label className="text-summarizer__label">
-            Lingua del riassunto:
+            {t.controls.language.label}
           </label>
           <div className="text-summarizer__options">
             {languageOptions.map(option => (
@@ -269,15 +287,13 @@ const TextSummarizer = ({ sourceText = "" }) => {
       {/* Summary Section */}
       <div className="text-summarizer__summary">
         <div className="text-summarizer__summary-header">
-          <h3 className="text-summarizer__title">
-            Riassunto generato
-          </h3>
+          <h3 className="text-summarizer__title">{t.header.title}</h3>
           <button
             className="text-summarizer__generate-button"
             onClick={generateSummary}
             disabled={isLoading}
           >
-            {isLoading ? 'Generando...' : 'Genera Riassunto'}
+            {isLoading ? t.buttons.generating : t.buttons.generate}
           </button>
         </div>
 
@@ -285,16 +301,14 @@ const TextSummarizer = ({ sourceText = "" }) => {
           {isLoading ? (
             <div className="text-summarizer__loading">
               <div className="text-summarizer__spinner" />
-              <p className="text-summarizer__loading-text">Generazione del riassunto in corso...</p>
+              <p className="text-summarizer__loading-text">{t.results.loading.text}</p>
             </div>
           ) : summary ? (
             <div className="text-summarizer__result">
               {summary}
             </div>
           ) : (
-            <div className="text-summarizer__placeholder">
-              Clicca su "Genera Riassunto" per iniziare
-            </div>
+            <div className="text-summarizer__placeholder">{t.results.placeholder}</div>
           )}
         </div>
 
@@ -306,21 +320,21 @@ const TextSummarizer = ({ sourceText = "" }) => {
               isActionButton={true}
               lightBackground={true}
             >
-              Copia
+              {t.buttons.copy}
             </OptionButton>
             <OptionButton
               onClick={downloadPDF}
               isActionButton={true}
               lightBackground={true}
             >
-              Download TXT
+              {t.buttons.downloadTxt}
             </OptionButton>
             <OptionButton
               onClick={generateSummary}
               isActionButton={true}
               lightBackground={true}
             >
-              Rigenera
+              {t.buttons.regenerate}
             </OptionButton>
           </div>
         )}

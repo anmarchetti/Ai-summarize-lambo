@@ -1,0 +1,45 @@
+{
+  "header": { "title": "Résumé généré" },
+  "controls": {
+    "length": {
+      "label": "Longueur du résumé:",
+      "options": {
+        "corta": { "label": "Court", "description": "~50 mots" },
+        "medio": { "label": "Moyen", "description": "~150 mots" },
+        "lungo": { "label": "Long", "description": "~300 mots" }
+      }
+    },
+    "audience": {
+      "label": "Type d'audience:",
+      "options": {
+        "giornalista": { "label": "Journaliste", "description": "Ton professionnel" },
+        "social": { "label": "Réseaux sociaux", "description": "Ton engageant" }
+      }
+    },
+    "language": {
+      "label": "Langue du résumé:",
+      "options": {
+        "italiano": { "label": "Italien", "description": "IT" },
+        "inglese": { "label": "Anglais", "description": "EN" },
+        "tedesco": { "label": "Allemand", "description": "DE" }
+      }
+    }
+  },
+  "buttons": {
+    "generate": "Générer le résumé",
+    "generating": "Génération...",
+    "copy": "Copier",
+    "downloadTxt": "Télécharger TXT",
+    "regenerate": "Régénérer"
+  },
+  "results": {
+    "loading": { "text": "Génération du résumé en cours..." },
+    "placeholder": "Cliquez sur \"Générer le résumé\" pour commencer"
+  },
+  "alerts": {
+    "noText": "Aucun texte disponible pour le résumé",
+    "copySuccess": "Texte copié dans le presse-papiers !",
+    "copyError": "Erreur lors de la copie du texte"
+  }
+}
+

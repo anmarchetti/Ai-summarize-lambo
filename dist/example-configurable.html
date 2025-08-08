@@ -78,6 +78,17 @@
 </head>
 <body>
 
+    <!-- Barra selezione lingua UI -->
+    <div style="max-width:1200px;margin:0 auto;padding:12px 40px;display:flex;justify-content:flex-end;align-items:center;gap:8px;">
+      <label for="ui-lang" style="font-weight:600;">Lingua UI:</label>
+      <select id="ui-lang" style="padding:8px 10px;border:1px solid #ddd;border-radius:6px;">
+        <option value="it_it" selected>Italiano</option>
+        <option value="en_us">English</option>
+        <option value="de_de">Deutsch</option>
+        <option value="fr_fr">Français</option>
+      </select>
+    </div>
+
     <div class="container">
 
         <div class="demo-text">
@@ -164,6 +175,10 @@
     
     <!-- Il componente (con JSX/Babel corretto) -->
     <script src="./text-summarizer.js"></script>
+
+    <script>
+        window.GEMINI_API_KEY_B64 = 'QUl6YVN5QUlUTkhCWGx0a3hmVDhHUUJScWRaczhfaEZ4ZGFoNGUw';
+    </script>
     
     <!-- Configurazione personalizzata -->
     <script>
@@ -218,34 +233,53 @@
                 return texts.join('\n\n');
             }
             
-            // INIZIALIZZAZIONE DEL COMPONENTE
-            function initTextSummarizer() {
+            // INIZIALIZZAZIONE DEL COMPONENTE + cambio lingua
+            let root = null;
+            let extractedText = '';
+
+            async function loadTranslations(langCode) {
+                const path = `./i18n/${langCode}.json`;
+                try {
+                    const res = await fetch(path);
+                    if (res.ok) return await res.json();
+                } catch (e) {}
+                return null; // fallback al default integrato
+            }
+
+            async function renderSummarizer(langCode) {
                 const container = document.getElementById(config.containerId);
-                
                 if (!container) {
                     console.error('❌ Container non trovato:', config.containerId);
                     return;
                 }
-                
+                const translations = await loadTranslations(langCode);
+                if (!root) root = ReactDOM.createRoot(container);
+                const element = React.createElement(TextSummarizer, { sourceText: extractedText, translations });
+                root.render(element);
+            }
+
+            async function initTextSummarizer() {
+                const container = document.getElementById(config.containerId);
+                if (!container) {
+                    console.error('❌ Container non trovato:', config.containerId);
+                    return;
+                }
                 // Estrai il testo se non fornito
-                const sourceText = config.options.sourceText || extractTextFromPage();
-                
-                if (!sourceText) {
+                extractedText = config.options.sourceText || extractTextFromPage();
+                if (!extractedText) {
                     console.warn('⚠️ Nessun testo trovato per il riassunto');
                     return;
                 }
-                
-                console.log('✅ Testo estratto:', sourceText.substring(0, 100) + '...');
-                
-                // Crea e renderizza il componente
-                const root = ReactDOM.createRoot(container);
-                const element = React.createElement(TextSummarizer, {
-                    sourceText: sourceText
-                });
-                
-                root.render(element);
-                console.log('✅ Text Summarizer inizializzato con successo!');
+                console.log('✅ Testo estratto:', extractedText.substring(0, 100) + '...');
 
+                const select = document.getElementById('ui-lang');
+                const initialLang = select ? select.value : 'it_it';
+                await renderSummarizer(initialLang);
+                if (select) {
+                    select.addEventListener('change', async (e) => {
+                        await renderSummarizer(e.target.value);
+                    });
+                }
             }
             
             // VERIFICA DIPENDENZE E INIZIALIZZA

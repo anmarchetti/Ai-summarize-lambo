@@ -1,0 +1,45 @@
+{
+  "header": { "title": "Riassunto generato" },
+  "controls": {
+    "length": {
+      "label": "Lunghezza del riassunto:",
+      "options": {
+        "corta": { "label": "Corta", "description": "~50 parole" },
+        "medio": { "label": "Media", "description": "~150 parole" },
+        "lungo": { "label": "Lunga", "description": "~300 parole" }
+      }
+    },
+    "audience": {
+      "label": "Tipo di audience:",
+      "options": {
+        "giornalista": { "label": "Giornalista", "description": "Tono professionale" },
+        "social": { "label": "Social Media", "description": "Tono coinvolgente" }
+      }
+    },
+    "language": {
+      "label": "Lingua del riassunto:",
+      "options": {
+        "italiano": { "label": "Italiano", "description": "IT" },
+        "inglese": { "label": "Inglese", "description": "EN" },
+        "tedesco": { "label": "Tedesco", "description": "DE" }
+      }
+    }
+  },
+  "buttons": {
+    "generate": "Genera Riassunto",
+    "generating": "Generando...",
+    "copy": "Copia",
+    "downloadTxt": "Download TXT",
+    "regenerate": "Rigenera"
+  },
+  "results": {
+    "loading": { "text": "Generazione del riassunto in corso..." },
+    "placeholder": "Clicca su \"Genera Riassunto\" per iniziare"
+  },
+  "alerts": {
+    "noText": "Nessun testo disponibile per il riassunto",
+    "copySuccess": "Testo copiato negli appunti!",
+    "copyError": "Errore durante la copia del testo"
+  }
+}
+

@@ -1,0 +1,45 @@
+{
+  "header": { "title": "Generierte Zusammenfassung" },
+  "controls": {
+    "length": {
+      "label": "Zusammenfassungslänge:",
+      "options": {
+        "corta": { "label": "Kurz", "description": "~50 Wörter" },
+        "medio": { "label": "Mittel", "description": "~150 Wörter" },
+        "lungo": { "label": "Lang", "description": "~300 Wörter" }
+      }
+    },
+    "audience": {
+      "label": "Zielgruppe:",
+      "options": {
+        "giornalista": { "label": "Journalist", "description": "Professioneller Ton" },
+        "social": { "label": "Social Media", "description": "Ansprechender Ton" }
+      }
+    },
+    "language": {
+      "label": "Sprache der Zusammenfassung:",
+      "options": {
+        "italiano": { "label": "Italienisch", "description": "IT" },
+        "inglese": { "label": "Englisch", "description": "EN" },
+        "tedesco": { "label": "Deutsch", "description": "DE" }
+      }
+    }
+  },
+  "buttons": {
+    "generate": "Zusammenfassung erstellen",
+    "generating": "Wird erstellt...",
+    "copy": "Kopieren",
+    "downloadTxt": "TXT herunterladen",
+    "regenerate": "Neu erstellen"
+  },
+  "results": {
+    "loading": { "text": "Zusammenfassung wird erstellt..." },
+    "placeholder": "Klicke auf \"Zusammenfassung erstellen\" um zu starten"
+  },
+  "alerts": {
+    "noText": "Kein Text für die Zusammenfassung verfügbar",
+    "copySuccess": "Text in die Zwischenablage kopiert!",
+    "copyError": "Fehler beim Kopieren des Textes"
+  }
+}
+

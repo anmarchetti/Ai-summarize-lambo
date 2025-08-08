@@ -5,7 +5,7 @@
   "main": "dist/text-summarizer.js",
   "scripts": {
     "build": "webpack --mode production && npm run copy-files",
-    "copy-files": "cp example-configurable.html dist/ 2>/dev/null || true",
+    "copy-files": "cp example-configurable.html dist/ 2>/dev/null || true && mkdir -p dist/i18n && cp -R src/i18n/*.json dist/i18n/ 2>/dev/null || true",
     "dev": "webpack --mode development --watch",
     "serve": "webpack serve --mode development --open",
     "test": "echo \"Error: no test specified\" && exit 1"
